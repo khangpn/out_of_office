@@ -1,0 +1,128 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Set Out Of Office</title>
+<hta:application
+  applicationname="Out of Office"  
+  border="thin"
+  borderstyle="raised"
+  caption="Commissions"
+  contextmenu="no"
+  icon="/app.ico"
+  maximizebutton="no"
+  minimizebutton="no"
+  navigable="no"
+  scroll="no"
+  selection="no"
+  showintaskbar="yes"
+  singleinstance="yes"
+  sysmenu="no"
+  version="1.0"
+  windowstate="normal"
+>
+
+<style type="text/css">
+.button1
+{
+color: green;
+}
+
+.button2
+{
+color: red;
+}
+
+</style>
+
+<script type="text/javascript">
+  window.onload = function() {
+    var form = document.getElementById("data-form");
+    var submitBtn = document.getElementById("submit-btn");
+    var exitBtn = document.getElementById("exit-btn");
+    var copyBtn = document.getElementById("copy-btn");
+    var externalTxt = document.getElementById("external-txt");
+    var internalTxt = document.getElementById("internal-txt");
+    var startDateInput = document.getElementById("start-date");
+    var endDateInput = document.getElementById("end-date");
+    var emailInput = document.getElementById("email-input");
+
+    function resize_window () {
+      window.resizeTo(705,650);
+    }
+    
+    function runPsScript(email, externalMessage, internalMessage, startDate, endDate) {
+      var shellObj = new ActiveXObject("WScript.Shell");
+      var htaFilePath = document.location.href.substring(8).replace(/\//gi, '\\');
+      var pattern = /[a-zA-Z0-9_]*\.hta$/
+      var currentDir = htaFilePath.replace(pattern, '');
+
+      var batPath = currentDir + "set_out_of_office.bat";
+      var psPath = currentDir + "set_out_of_office.ps1";
+      var fullCommand = batPath + " \"" +  psPath +  "\" \"" + email + "\" \"" + externalMessage +
+        "\" \"" + internalMessage + "\" \"" + startDate + "\" \"" + endDate + "\"";
+      var tmp = shellObj.run(fullCommand, 1, true);
+      alert(tmp);
+    }
+
+    function handleSubmit() {
+      var email = emailInput.value;
+      var externalMessage = externalTxt.value;
+      var internalMessage = internalTxt.value;
+      var startDate = startDateInput.value;
+      var endDate = endDateInput.value;
+      runPsScript(email, externalMessage, internalMessage, startDate, endDate);
+    }
+
+    function exit() {
+      window.close();
+    }
+
+    function copyText() {
+      internalTxt.value = externalTxt.value;
+    }
+
+    function getToday() {
+      var today = new Date();
+      return today.getDate().toString() + "/" + (today.getMonth() + 1).toString() + "/" +
+        today.getFullYear().toString();
+    }
+
+    resize_window();
+    submitBtn.attachEvent("onmousedown", handleSubmit);
+    exitBtn.attachEvent("onmousedown", exit);
+    copyBtn.attachEvent("onmousedown", copyText);
+    startDateInput.value = getToday();
+    endDateInput.value = getToday();
+  };
+</script>
+
+</head>
+  <body style="FONT: 11pt arial; COLOR: black;"> 
+    <img style="width:80px; height: 80px; border: 0;" src="arag_logo.jpg">
+    <form id="data-form">
+      <p>E-mail address:
+        <input type="text" name="mailBox" id="email-input" size="55" value="@arag.be"/>
+      </p>
+      <p>Message external:
+        <textarea Name="msgEx" id="external-txt" ROWS="4" COLS="40"></textarea>
+      </p>
+      <p>Message internal:
+        <textarea Name="msgIn" id="internal-txt" ROWS="4" COLS="40"></textarea>
+        <input type="button" id="copy-btn" value="Copy external Message" class=button1>
+      </p>
+      <p>Start date:
+        <input type="date" name="stDate" id="start-date" size="10" value="/11/2018"/>
+      <!--
+        <input type=button value="select today's date" name="today_date_btn" onClick="select_today" class=button1>
+      -->
+      </p>
+      <p>End date:
+        <input type="date" name="endDate" id="end-date" size="10" value="/11/2018"/>
+      </p>
+    
+    </form>
+    
+    <input type="button" value="Continue" id="submit-btn" class=button1 >
+    <input type="button" value="Exit" id="exit-btn" class=button2>
+  </body>
+</html>
