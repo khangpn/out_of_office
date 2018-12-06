@@ -68,9 +68,20 @@ color: red;
       var email = emailInput.value;
       var externalMessage = externalTxt.value;
       var internalMessage = internalTxt.value;
-      var startDate = startDateInput.value;
-      var endDate = endDateInput.value;
+      var startDate = formatDate(startDateInput.value);
+      var endDate = formatDate(endDateInput.value);
       runPsScript(email, externalMessage, internalMessage, startDate, endDate);
+    }
+
+    function formatDate(old) {
+      var oldComponents = old.split('/');
+      if (oldComponents.length < 3) {
+        return;
+      }
+      var day = oldComponents[0];
+      oldComponents[0] = oldComponents[1];
+      oldComponents[1] = oldComponents[0];
+      return oldComponents.join('/');
     }
 
     function exit() {
