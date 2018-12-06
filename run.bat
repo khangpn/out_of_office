@@ -1,0 +1,1 @@
+mshta.exe C:\Scripts\setOutOfOffice\set_out_of_office.hta
