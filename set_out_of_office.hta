@@ -45,12 +45,13 @@ color: red;
     var startDateInput = document.getElementById("start-date");
     var endDateInput = document.getElementById("end-date");
     var emailInput = document.getElementById("email-input");
+    var forwardInput = document.getElementById("forward-input");
 
     function resize_window () {
       window.resizeTo(705,650);
     }
     
-    function runPsScript(email, externalMessage, internalMessage, startDate, endDate) {
+    function runPsScript(email, externalMessage, internalMessage, startDate, endDate, forwardTo) {
       var shellObj = new ActiveXObject("WScript.Shell");
       var htaFilePath = document.location.href.substring(8).replace(/\//gi, '\\');
       var pattern = /[a-zA-Z0-9_]*\.hta$/
@@ -59,9 +60,13 @@ color: red;
       var batPath = currentDir + "set_out_of_office.bat";
       var psPath = currentDir + "set_out_of_office.ps1";
       var fullCommand = batPath + " \"" +  psPath +  "\" \"" + email + "\" \"" + externalMessage +
-        "\" \"" + internalMessage + "\" \"" + startDate + "\" \"" + endDate + "\"";
+        "\" \"" + internalMessage + "\" \"" + startDate + "\" \"" + endDate  + "\" \"" + forwardTo + "\"";
       var tmp = shellObj.run(fullCommand, 1, true);
-      alert(tmp);
+      if (tmp=="0") {
+        alert("Setting successfully.");
+      } else {
+        alert("Setting is failed!");
+      }
     }
 
     function handleSubmit() {
@@ -70,7 +75,8 @@ color: red;
       var internalMessage = internalTxt.value;
       var startDate = formatDate(startDateInput.value);
       var endDate = formatDate(endDateInput.value);
-      runPsScript(email, externalMessage, internalMessage, startDate, endDate);
+      var forwardTo = forwardInput.value;
+      runPsScript(email, externalMessage, internalMessage, startDate, endDate, forwardTo);
     }
 
     function formatDate(old) {
@@ -129,6 +135,9 @@ color: red;
       </p>
       <p>End date:
         <input type="date" name="endDate" id="end-date" size="10" value="/11/2018"/>
+      </p>
+      <p>Forward To (optional):
+        <input type="text" name="forwardTo" id="forward-input" size="55" value="@arag.be"/>
       </p>
     
     </form>
